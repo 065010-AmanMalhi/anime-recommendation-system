@@ -195,6 +195,12 @@ def get_ui_anime_list(df, top_n=200):
 
     return ui_df['Name'].head(top_n).tolist()
 
+def get_all_genres(df):
+    genres = set()
+    for g in df['Genres'].dropna():
+        for genre in g.split(','):
+            genres.add(genre.strip())
+    return sorted(genres)
 
 # --------------------------------------------------
 # UI components
@@ -310,12 +316,5 @@ if mode == "New to Anime":
         for _, row in beginners.iterrows():
             anime_card(row)
 
-# Add Filters
 
-def get_all_genres(df):
-    genres = set()
-    for g in df['Genres'].dropna():
-        for genre in g.split(','):
-            genres.add(genre.strip())
-    return sorted(genres)
 
