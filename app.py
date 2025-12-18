@@ -257,15 +257,12 @@ episode_range = st.sidebar.slider(
 )
 
 if mode == "Similar Anime":
+
+    ui_anime_list = get_ui_anime_list(anime_df, top_n=200)
+
     selected_anime = st.selectbox(
         "Select an anime you like",
-        ui_anime_list = get_ui_anime_list(anime_df, top_n=200)
-
-selected_anime = st.selectbox(
-    "Select an anime you like",
-    ui_anime_list
-)
-
+        ui_anime_list
     )
 
     if st.button("Recommend Similar Anime"):
@@ -274,37 +271,34 @@ selected_anime = st.selectbox(
         if recs.empty:
             st.warning("Selected anime not found in dataset.")
         else:
-            if st.button("Recommend Similar Anime"):
-    recs = recommend_anime(selected_anime)
-
-    if recs.empty:
-        st.warning("Selected anime not found in dataset.")
-    else:
-        # Rating filter
-        recs = recs[
-            (recs['Score'].isna()) |
-            (recs['Score'] >= min_score)
-        ]
-
-        # Episode filter
-        recs = recs[
-            (recs['Episodes'] >= episode_range[0]) &
-            (recs['Episodes'] <= episode_range[1])
-        ]
-
-        # Genre filter
-        if selected_genres:
+            # Rating filter
             recs = recs[
-                recs['Genres'].apply(
-                    lambda g: any(genre in g for genre in selected_genres)
-                )
+                (recs['Score'].isna()) |
+                (recs['Score'] >= min_score)
             ]
 
-        if recs.empty:
-            st.info("No anime matched the selected filters.")
-        else:
-            for _, row in recs.iterrows():
-                anime_card(row)
+            # Episode filter
+            recs = recs[
+                (recs['Episodes'] >= episode_range[0]) &
+                (recs['Episodes'] <= episode_range[1])
+            ]
+
+            # Genre filter
+            if selected_genres:
+                recs = recs[
+                    recs['Genres'].apply(
+                        lambda g: any(
+                            genre in g for genre in selected_genres
+                        )
+                    )
+                ]
+
+            if recs.empty:
+                st.info("No anime matched the selected filters.")
+            else:
+                for _, row in recs.iterrows():
+                    anime_card(row)
+
 
 
 if mode == "New to Anime":
