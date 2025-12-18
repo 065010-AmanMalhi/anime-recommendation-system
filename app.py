@@ -59,6 +59,11 @@ def load_and_prepare_data():
     anime_df['Episodes'] = pd.to_numeric(
         anime_df['Episodes'], errors='coerce'
     ).fillna(1).astype(int)
+    # Score → numeric (CRITICAL FIX)
+anime_df['Score'] = pd.to_numeric(
+    anime_df['Score'],
+    errors='coerce'
+)
 
     anime_df['Genres'] = anime_df['Genres'].fillna("Unknown Genre")
     anime_df['Studios'] = anime_df['Studios'].fillna("Studio information not available")
