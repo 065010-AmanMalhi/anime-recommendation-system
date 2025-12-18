@@ -26,7 +26,7 @@ SAMPLE_SIZE = 10001
 # --------------------------------------------------
 
 @st.cache_data
-def load_and_prepare_data():
+    def load_and_prepare_data():
     anime_url = "https://raw.githubusercontent.com/065010-AmanMalhi/anime-recommendation-system/main/anime.csv"
     synopsis_url = "https://raw.githubusercontent.com/065010-AmanMalhi/anime-recommendation-system/main/anime_with_synopsis.csv"
 
@@ -39,8 +39,10 @@ def load_and_prepare_data():
         how='inner'
     )
 
+    # Standardize missing values
     anime_df = anime_df.replace("Unknown", np.nan)
 
+    # Keep required columns
     anime_df = anime_df[
         [
             'MAL_ID',
@@ -56,26 +58,30 @@ def load_and_prepare_data():
         ]
     ].dropna(subset=['sypnopsis'])
 
+    # Episodes → numeric
     anime_df['Episodes'] = pd.to_numeric(
-        anime_df['Episodes'], errors='coerce'
+        anime_df['Episodes'],
+        errors='coerce'
     ).fillna(1).astype(int)
-    # Score → numeric (CRITICAL FIX)
-anime_df['Score'] = pd.to_numeric(
-    anime_df['Score'],
-    errors='coerce'
-)
 
+    # Score → numeric
+    anime_df['Score'] = pd.to_numeric(
+        anime_df['Score'],
+        errors='coerce'
+    )
+
+    # Display-friendly fills
     anime_df['Genres'] = anime_df['Genres'].fillna("Unknown Genre")
     anime_df['Studios'] = anime_df['Studios'].fillna("Studio information not available")
     anime_df['Aired'] = anime_df['Aired'].fillna("Release date not available")
 
+    # Final sampling
     anime_df = anime_df.sample(
         n=SAMPLE_SIZE,
         random_state=GROUP_ID
     ).reset_index(drop=True)
 
     return anime_df
-
 
 anime_df = load_and_prepare_data()
 
