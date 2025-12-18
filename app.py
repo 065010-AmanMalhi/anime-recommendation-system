@@ -26,7 +26,7 @@ SAMPLE_SIZE = 10001
 # --------------------------------------------------
 
 @st.cache_data
-    def load_and_prepare_data():
+def load_and_prepare_data():
     anime_url = "https://raw.githubusercontent.com/065010-AmanMalhi/anime-recommendation-system/main/anime.csv"
     synopsis_url = "https://raw.githubusercontent.com/065010-AmanMalhi/anime-recommendation-system/main/anime_with_synopsis.csv"
 
@@ -82,6 +82,7 @@ SAMPLE_SIZE = 10001
     ).reset_index(drop=True)
 
     return anime_df
+
 
 anime_df = load_and_prepare_data()
 
