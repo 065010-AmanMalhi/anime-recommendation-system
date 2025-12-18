@@ -172,6 +172,30 @@ def fetch_anime_image(mal_id):
     except:
         return None
 
+def get_ui_anime_list(df, top_n=200):
+    ui_df = df.copy()
+
+    # Keep only proper anime
+    ui_df = ui_df[ui_df['Type'].isin(['TV', 'Movie'])]
+    ui_df = ui_df[ui_df['Episodes'] >= 6]
+
+    # Remove weird titles
+    ui_df = ui_df[
+        ui_df['Name'].str.match(
+            r'^[A-Za-z0-9\s:;\'\-!,\.]+$',
+            na=False
+        )
+    ]
+
+    # Prefer popular anime
+    ui_df = ui_df.sort_values(
+        by='Members',
+        ascending=False
+    )
+
+    return ui_df['Name'].head(top_n).tolist()
+
+
 # --------------------------------------------------
 # UI components
 # --------------------------------------------------
@@ -211,11 +235,37 @@ mode = st.sidebar.radio(
     "Choose recommendation type",
     ["Similar Anime", "New to Anime"]
 )
+st.sidebar.subheader("Refine Similar Results")
+
+# Genre filter
+all_genres = get_all_genres(anime_df)
+selected_genres = st.sidebar.multiselect(
+    "Preferred Genres",
+    options=all_genres
+)
+
+# Rating filter
+min_score = st.sidebar.slider(
+    "Minimum Rating",
+    0.0, 10.0, 6.5, 0.5
+)
+
+# Episode range filter
+episode_range = st.sidebar.slider(
+    "Episode Range",
+    1, 100, (6, 50)
+)
 
 if mode == "Similar Anime":
     selected_anime = st.selectbox(
         "Select an anime you like",
-        sorted(anime_df['Name'].unique())
+        ui_anime_list = get_ui_anime_list(anime_df, top_n=200)
+
+selected_anime = st.selectbox(
+    "Select an anime you like",
+    ui_anime_list
+)
+
     )
 
     if st.button("Recommend Similar Anime"):
@@ -224,8 +274,38 @@ if mode == "Similar Anime":
         if recs.empty:
             st.warning("Selected anime not found in dataset.")
         else:
+            if st.button("Recommend Similar Anime"):
+    recs = recommend_anime(selected_anime)
+
+    if recs.empty:
+        st.warning("Selected anime not found in dataset.")
+    else:
+        # Rating filter
+        recs = recs[
+            (recs['Score'].isna()) |
+            (recs['Score'] >= min_score)
+        ]
+
+        # Episode filter
+        recs = recs[
+            (recs['Episodes'] >= episode_range[0]) &
+            (recs['Episodes'] <= episode_range[1])
+        ]
+
+        # Genre filter
+        if selected_genres:
+            recs = recs[
+                recs['Genres'].apply(
+                    lambda g: any(genre in g for genre in selected_genres)
+                )
+            ]
+
+        if recs.empty:
+            st.info("No anime matched the selected filters.")
+        else:
             for _, row in recs.iterrows():
                 anime_card(row)
+
 
 if mode == "New to Anime":
     st.subheader("🌱 Beginner-Friendly Anime")
@@ -235,3 +315,13 @@ if mode == "New to Anime":
 
         for _, row in beginners.iterrows():
             anime_card(row)
+
+# Add Filters
+
+def get_all_genres(df):
+    genres = set()
+    for g in df['Genres'].dropna():
+        for genre in g.split(','):
+            genres.add(genre.strip())
+    return sorted(genres)
+
