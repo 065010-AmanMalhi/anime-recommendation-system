@@ -9,6 +9,27 @@ from sklearn.metrics.pairwise import cosine_similarity
 # --------------------------------------------------
 # Page config
 # --------------------------------------------------
+st.markdown("""
+<style>
+/* Card hover effect */
+div[data-testid="stVerticalBlock"]:hover {
+    transform: scale(1.01);
+    transition: 0.2s ease-in-out;
+}
+
+/* Reduce padding */
+.block-container {
+    padding-top: 2rem;
+}
+
+/* Anime card separation */
+hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #ff4b4b, transparent);
+}
+</style>
+""", unsafe_allow_html=True)
 
 st.set_page_config(
     page_title="Anime Recommendation System",
