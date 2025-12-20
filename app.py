@@ -367,15 +367,17 @@ if mode == "Similar Anime":
                     anime_card(row)
 
 if mode == "Recommend Anime":
+
     st.subheader("🐉 Starter Anime Picks")
 
-    if st.button("Show Beginner Recommendations"):
+    if st.button("Show Recommendations"):
         beginners = beginner_recommendations(10)
-st.subheader("📊 Why these anime are beginner-friendly")
-popularity_rating_scatter(
-    beginners,
-    "Beginner Picks: Popularity vs Rating"
-)
+
+        st.subheader("📊 Why these anime are recommended")
+        popularity_rating_scatter(
+            beginners,
+            "Beginner Picks: Popularity vs Rating"
+        )
 
         for _, row in beginners.iterrows():
             anime_card(row)
