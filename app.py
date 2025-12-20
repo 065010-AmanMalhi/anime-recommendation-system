@@ -195,30 +195,31 @@ def beginner_recommendations(top_n=10):
     return candidates.head(top_n)
 
 def popularity_rating_scatter(df, title):
+
     df = df.copy()
 
-df["rating_band"] = pd.cut(
-    df["Score"],
-    bins=[0, 7.5, 8.5, 10],
-    labels=["Decent", "Strong", "Elite"]
-)
+    df["rating_band"] = pd.cut(
+        df["Score"],
+        bins=[0, 7.5, 8.5, 10],
+        labels=["Decent", "Strong", "Elite"]
+    )
 
-   fig = px.scatter(
-    df,
-    x="Members",
-    y="Score",
-    size="Members",
-    color="rating_band",
-    color_discrete_map={
-        "Elite": "#FFD700",     # Gold
-        "Strong": "#2ECC71",    # Green
-        "Decent": "#3498DB"     # Blue
-    },
-    hover_name="Name",
-    title=title,
-    template="plotly_dark",
-    opacity=0.8
-)
+    fig = px.scatter(
+        df,
+        x="Members",
+        y="Score",
+        size="Members",
+        color="rating_band",
+        color_discrete_map={
+            "Elite": "#FFD700",
+            "Strong": "#2ECC71",
+            "Decent": "#3498DB"
+        },
+        hover_name="Name",
+        title=title,
+        template="plotly_dark",
+        opacity=0.8
+    )
 
     fig.update_layout(
         xaxis_title="Number of Users",
@@ -227,6 +228,7 @@ df["rating_band"] = pd.cut(
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
 
 
 # --------------------------------------------------
