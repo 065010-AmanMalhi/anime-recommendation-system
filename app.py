@@ -134,6 +134,18 @@ cosine_sim, title_to_index = build_similarity(anime_df)
 # --------------------------------------------------
 # Recommendation functions
 # --------------------------------------------------
+def recommend_anime(title, top_n=8):
+    title = title.lower()
+
+    if title not in title_to_index:
+        return pd.DataFrame()
+
+    idx = title_to_index[title]
+    scores = list(enumerate(cosine_sim[idx]))
+    scores = sorted(scores, key=lambda x: x[1], reverse=True)
+
+    indices = [i[0] for i in scores[1:top_n+1]]
+    return anime_df.iloc[indices]
 
 def beginner_recommendations(top_n=10):
     candidates = anime_df[
@@ -165,6 +177,11 @@ def beginner_recommendations(top_n=10):
     )
 
     return candidates.head(top_n)
+
+if mode == "Similar Anime":
+    ...
+    if st.button("Recommend Similar Anime"):
+        recs = recommend_anime(selected_anime)
 
 
 # --------------------------------------------------
