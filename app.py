@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import requests
+import plotly.express as px
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -199,6 +200,28 @@ def beginner_recommendations(top_n=10):
 
     return candidates.head(top_n)
 
+def popularity_rating_scatter(df, title):
+    fig = px.scatter(
+        df,
+        x="Members",
+        y="Score",
+        size="Members",
+        color="Type",
+        hover_name="Name",
+        title=title,
+        template="plotly_dark",
+        opacity=0.7
+    )
+
+    fig.update_layout(
+        xaxis_title="Number of Users",
+        yaxis_title="Rating",
+        height=420
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
 # --------------------------------------------------
 # Poster fetching (MAL via Jikan)
 # --------------------------------------------------
@@ -332,6 +355,13 @@ if mode == "Similar Anime":
 
             if recs.empty:
                 st.info("No anime matched the selected filters.")
+
+            if not recs.empty:
+    st.subheader("📊 How these recommendations compare")
+    popularity_rating_scatter(
+        recs,
+        "Similar Anime: Popularity vs Rating"
+    )
             else:
                 for _, row in recs.iterrows():
                     anime_card(row)
@@ -339,10 +369,15 @@ if mode == "Similar Anime":
 
 
 if mode == "Recommend Anime":
-    st.subheader("🌱 Beginner-Friendly Anime")
+    st.subheader("🐉 Starter Anime Picks")
 
     if st.button("Show Beginner Recommendations"):
         beginners = beginner_recommendations(10)
+st.subheader("📊 Why these anime are beginner-friendly")
+popularity_rating_scatter(
+    beginners,
+    "Beginner Picks: Popularity vs Rating"
+)
 
         for _, row in beginners.iterrows():
             anime_card(row)
