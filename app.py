@@ -355,14 +355,12 @@ if mode == "Similar Anime":
 
             if recs.empty:
                 st.info("No anime matched the selected filters.")
-
-            if not recs.empty:
-    st.subheader("📊 How these recommendations compare")
-    popularity_rating_scatter(
-        recs,
-        "Similar Anime: Popularity vs Rating"
-    )
-            else:
+             else:
+                st.subheader("📊 How these recommendations compare")
+                popularity_rating_scatter(
+                    recs,
+                    "Similar Anime: Popularity vs Rating"
+                )
                 for _, row in recs.iterrows():
                     anime_card(row)
 
