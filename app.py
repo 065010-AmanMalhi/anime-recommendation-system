@@ -195,17 +195,30 @@ def beginner_recommendations(top_n=10):
     return candidates.head(top_n)
 
 def popularity_rating_scatter(df, title):
-    fig = px.scatter(
-        df,
-        x="Members",
-        y="Score",
-        size="Members",
-        color="Type",
-        hover_name="Name",
-        title=title,
-        template="plotly_dark",
-        opacity=0.7
-    )
+    df = df.copy()
+
+df["rating_band"] = pd.cut(
+    df["Score"],
+    bins=[0, 7.5, 8.5, 10],
+    labels=["Decent", "Strong", "Elite"]
+)
+
+   fig = px.scatter(
+    df,
+    x="Members",
+    y="Score",
+    size="Members",
+    color="rating_band",
+    color_discrete_map={
+        "Elite": "#FFD700",     # Gold
+        "Strong": "#2ECC71",    # Green
+        "Decent": "#3498DB"     # Blue
+    },
+    hover_name="Name",
+    title=title,
+    template="plotly_dark",
+    opacity=0.8
+)
 
     fig.update_layout(
         xaxis_title="Number of Users",
@@ -347,19 +360,20 @@ if mode == "Similar Anime":
 
 if mode == "Recommend Anime":
 
-    st.subheader("🐉 Starter Anime Picks")
+    st.subheader("🐉 Beginner-Friendly Anime")
 
-    if st.button("Show Recommendations"):
+    if st.button("Show Beginner Recommendations"):
+
         beginners = beginner_recommendations(10)
 
         for _, row in beginners.iterrows():
-    anime_card(row)
+            anime_card(row)
 
-st.subheader("📊 Why these anime are recommended")
-popularity_rating_scatter(
-    beginners,
-    "Beginner Picks: Popularity vs Rating"
-)
+        st.subheader("🧠 Why these anime are recommended")
+        popularity_rating_scatter(
+            beginners,
+            "Beginner Picks: Popularity vs Rating"
+        )
 
 
 
