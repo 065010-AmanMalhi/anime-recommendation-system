@@ -213,7 +213,6 @@ def get_all_genres(df):
 # --------------------------------------------------
 # UI components
 # --------------------------------------------------
-
 def anime_card(row):
     col1, col2 = st.columns([1, 3])
 
@@ -224,9 +223,16 @@ def anime_card(row):
 
     with col2:
         st.markdown(f"### {row['Name']}")
-        score = "N/A" if pd.isna(row['Score']) else round(row['Score'], 2)
 
+        score = "N/A" if pd.isna(row['Score']) else round(row['Score'], 2)
         st.markdown(f"⭐ **Score:** {score}")
+
+        # Community rating signal
+        if row.get('rating_count', 0) > 0:
+            st.markdown(
+                f"👥 **Rated by:** {int(row['rating_count']):,} users"
+            )
+
         st.markdown(f"🎭 **Genres:** {row['Genres']}")
         st.markdown(f"🎬 **Studio:** {row['Studios']}")
         st.markdown(f"📺 **Episodes:** {row['Episodes']}")
@@ -238,6 +244,7 @@ def anime_card(row):
         )
 
     st.markdown("---")
+
 
 # --------------------------------------------------
 # Sidebar + App logic
