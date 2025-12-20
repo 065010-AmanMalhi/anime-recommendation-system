@@ -349,16 +349,16 @@ if mode == "Similar Anime":
 
             if recs.empty:
                 st.info("No anime matched the selected filters.")
-            else:
-                st.subheader("📊 How these recommendations compare")
-
-                popularity_rating_scatter(
-                    recs,
-                    "Similar Anime: Popularity vs Rating"
-                )
-
+            
                 for _, row in recs.iterrows():
-                    anime_card(row)
+    anime_card(row)
+
+st.subheader("📊 How these recommendations compare")
+popularity_rating_scatter(
+    recs,
+    "Similar Anime: Popularity vs Rating"
+)
+
 
 if mode == "Recommend Anime":
 
@@ -367,14 +367,15 @@ if mode == "Recommend Anime":
     if st.button("Show Recommendations"):
         beginners = beginner_recommendations(10)
 
-        st.subheader("📊 Why these anime are recommended")
-        popularity_rating_scatter(
-            beginners,
-            "Beginner Picks: Popularity vs Rating"
-        )
-
         for _, row in beginners.iterrows():
-            anime_card(row)
+    anime_card(row)
+
+st.subheader("📊 Why these anime are recommended")
+popularity_rating_scatter(
+    beginners,
+    "Beginner Picks: Popularity vs Rating"
+)
+
 
 
 
