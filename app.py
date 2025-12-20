@@ -270,13 +270,6 @@ mode = st.sidebar.radio(
 )
 st.sidebar.subheader("Refine Similar Results")
 
-# Genre filter
-all_genres = get_all_genres(anime_df)
-selected_genres = st.sidebar.multiselect(
-    "Preferred Genres",
-    options=all_genres
-)
-
 # Rating filter
 min_score = st.sidebar.slider(
     "Minimum Rating",
@@ -315,16 +308,6 @@ if mode == "Similar Anime":
                 (recs['Episodes'] >= episode_range[0]) &
                 (recs['Episodes'] <= episode_range[1])
             ]
-
-            # Genre filter
-            if selected_genres:
-                recs = recs[
-                    recs['Genres'].apply(
-                        lambda g: any(
-                            genre in g for genre in selected_genres
-                        )
-                    )
-                ]
 
             if recs.empty:
                 st.info("No anime matched the selected filters.")
