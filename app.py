@@ -86,6 +86,24 @@ def load_and_prepare_data():
 
 anime_df = load_and_prepare_data()
 
+@st.cache_data
+def load_rating_aggregates():
+    ratings_url = "https://raw.githubusercontent.com/065010-AmanMalhi/anime-recommendation-system/main/anime_rating_aggregates.csv"
+    return pd.read_csv(ratings_url)
+anime_df = load_and_prepare_data()
+rating_agg = load_rating_aggregates()
+
+anime_df = anime_df.merge(
+    rating_agg,
+    on='MAL_ID',
+    how='left'
+)
+
+anime_df['rating_confidence'] = anime_df['rating_confidence'].fillna(0)
+anime_df['rating_count'] = anime_df['rating_count'].fillna(0)
+anime_df['avg_rating'] = anime_df['avg_rating'].fillna(anime_df['Score'])
+
+
 # --------------------------------------------------
 # Text embeddings + similarity
 # --------------------------------------------------
@@ -117,47 +135,37 @@ cosine_sim, title_to_index = build_similarity(anime_df)
 # Recommendation functions
 # --------------------------------------------------
 
-def recommend_anime(title, top_n=8):
-    title = title.lower()
-
-    if title not in title_to_index:
-        return pd.DataFrame()
-
-    idx = title_to_index[title]
-    scores = list(enumerate(cosine_sim[idx]))
-    scores = sorted(scores, key=lambda x: x[1], reverse=True)
-
-    indices = [i[0] for i in scores[1:top_n+1]]
-
-    return anime_df.iloc[indices]
-
-
 def beginner_recommendations(top_n=10):
-    beginners = anime_df[
+    candidates = anime_df[
         anime_df['Type'].isin(['TV', 'Movie']) &
         (anime_df['Episodes'] >= 6) &
         (anime_df['Episodes'] <= 50) &
-        (~anime_df['Genres'].str.contains('Music', case=False, na=False)) &
-        (
-            (anime_df['Score'] >= 7.5) |
-            (anime_df['Members'] >= anime_df['Members'].quantile(0.75))
-        )
+        (~anime_df['Genres'].str.contains('Music', case=False, na=False))
     ].copy()
 
-    beginners['score_filled'] = beginners['Score'].fillna(0)
-    beginners['popularity_norm'] = beginners['Members'] / beginners['Members'].max()
-
-    beginners['final_score'] = (
-        0.6 * beginners['score_filled'] +
-        0.4 * beginners['popularity_norm']
+    candidates['score_norm'] = candidates['Score'].fillna(0) / 10
+    candidates['popularity_norm'] = (
+        candidates['Members'] / candidates['Members'].max()
     )
 
-    beginners = beginners.sort_values(
+    candidates['community_norm'] = (
+        candidates['rating_confidence'] /
+        (candidates['rating_confidence'].max() + 1)
+    )
+
+    candidates['final_score'] = (
+        0.3 * candidates['score_norm'] +
+        0.3 * candidates['popularity_norm'] +
+        0.4 * candidates['community_norm']
+    )
+
+    candidates = candidates.sort_values(
         by='final_score',
         ascending=False
     )
 
-    return beginners.head(top_n)
+    return candidates.head(top_n)
+
 
 # --------------------------------------------------
 # Poster fetching (MAL via Jikan)
@@ -239,7 +247,8 @@ st.sidebar.header("Explore")
 
 mode = st.sidebar.radio(
     "Choose recommendation type",
-    ["Similar Anime", "New to Anime"]
+   ["Similar Anime", "Recommend Anime"]
+
 )
 st.sidebar.subheader("Refine Similar Results")
 
@@ -262,7 +271,7 @@ episode_range = st.sidebar.slider(
     1, 100, (6, 50)
 )
 
-if mode == "Similar Anime":
+if mode == "Recommend Anime":
 
     ui_anime_list = get_ui_anime_list(anime_df, top_n=200)
 
@@ -307,7 +316,7 @@ if mode == "Similar Anime":
 
 
 
-if mode == "New to Anime":
+if mode == "Recommend Anime":
     st.subheader("🌱 Beginner-Friendly Anime")
 
     if st.button("Show Beginner Recommendations"):
@@ -315,6 +324,11 @@ if mode == "New to Anime":
 
         for _, row in beginners.iterrows():
             anime_card(row)
+            if row.get('rating_count', 0) > 0:
+    st.markdown(
+        f"👥 **Rated by:** {int(row['rating_count']):,} users"
+    )
+
 
 
 
