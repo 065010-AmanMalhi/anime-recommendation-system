@@ -331,10 +331,6 @@ if mode == "Recommend Anime":
 
         for _, row in beginners.iterrows():
             anime_card(row)
-            if row.get('rating_count', 0) > 0:
-    st.markdown(
-        f"👥 **Rated by:** {int(row['rating_count']):,} users"
-    )
 
 
 
