@@ -178,12 +178,6 @@ def beginner_recommendations(top_n=10):
 
     return candidates.head(top_n)
 
-if mode == "Similar Anime":
-    ...
-    if st.button("Recommend Similar Anime"):
-        recs = recommend_anime(selected_anime)
-
-
 # --------------------------------------------------
 # Poster fetching (MAL via Jikan)
 # --------------------------------------------------
@@ -340,7 +334,7 @@ if mode == "Recommend Anime":
 
 
 
-if mode == "Recommend Anime":
+if mode == "Similar Anime":
     st.subheader("🌱 Beginner-Friendly Anime")
 
     if st.button("Show Beginner Recommendations"):
