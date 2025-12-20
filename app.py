@@ -289,7 +289,7 @@ episode_range = st.sidebar.slider(
     1, 100, (6, 50)
 )
 
-if mode == "Recommend Anime":
+if mode == "Similar Anime":
 
     ui_anime_list = get_ui_anime_list(anime_df, top_n=200)
 
@@ -334,7 +334,7 @@ if mode == "Recommend Anime":
 
 
 
-if mode == "Similar Anime":
+if mode == "Recommend Anime":
     st.subheader("🌱 Beginner-Friendly Anime")
 
     if st.button("Show Beginner Recommendations"):
