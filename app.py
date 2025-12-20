@@ -333,31 +333,16 @@ if mode == "Similar Anime":
         recs = recommend_anime(selected_anime)
 
         if recs.empty:
-            st.warning("Selected anime not found in dataset.")
+            st.info("No anime matched the selected filters.")
         else:
-            # Apply rating filter
-            recs = recs[
-                (recs['Score'].isna()) |
-                (recs['Score'] >= min_score)
-            ]
+            for _, row in recs.iterrows():
+                anime_card(row)
 
-            # Apply episode filter
-            recs = recs[
-                (recs['Episodes'] >= episode_range[0]) &
-                (recs['Episodes'] <= episode_range[1])
-            ]
-
-            if recs.empty:
-                st.info("No anime matched the selected filters.")
-            
-                for _, row in recs.iterrows():
-    anime_card(row)
-
-st.subheader("📊 How these recommendations compare")
-popularity_rating_scatter(
-    recs,
-    "Similar Anime: Popularity vs Rating"
-)
+            st.subheader("⚔️ How these recommendations compare")
+            popularity_rating_scatter(
+                recs,
+                "Similar Anime: Popularity vs Rating"
+            )
 
 
 if mode == "Recommend Anime":
