@@ -45,6 +45,24 @@ section[data-testid="stSidebar"] {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* Card hover glow (no scaling) */
+div[data-testid="stVerticalBlock"]:hover {
+    box-shadow: 0 0 18px rgba(99, 102, 241, 0.25);
+    transition: box-shadow 0.25s ease-in-out;
+}
+
+/* Anime title hover */
+h3:hover {
+    color: #a5b4fc;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 st.set_page_config(
     page_title="Anime Recommendation System",
     layout="wide"
