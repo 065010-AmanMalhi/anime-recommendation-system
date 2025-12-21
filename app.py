@@ -393,18 +393,20 @@ def explain_recommendation(row):
     return "Recommended because it is " + ", ".join(reasons) + "."
 
 def show_trailer(anime_name):
+
     query = anime_name + " official trailer"
     youtube_search_url = (
         "https://www.youtube.com/results?search_query="
         + query.replace(" ", "+")
     )
 
-   st.markdown(
-    f"<span style='font-size:0.9rem;'>🎬 "
-    f"<a href='{youtube_search_url}' target='_blank'>Watch trailer</a>"
-    f"</span>",
-    unsafe_allow_html=True
-)
+    st.markdown(
+        f"<span style='font-size:0.9rem;'>🎬 "
+        f"<a href='{youtube_search_url}' target='_blank'>Watch trailer</a>"
+        f"</span>",
+        unsafe_allow_html=True
+    )
+
 
 
 # --------------------------------------------------
