@@ -324,8 +324,30 @@ def anime_card(row):
             f"<p style='color:#cfcfcf'>{row['sypnopsis'][:300]}...</p>",
             unsafe_allow_html=True
         )
+        st.markdown(
+            f"<p style='color:#9aa4b2; font-size:0.85rem; font-style:italic'>"
+            f"{explain_recommendation(row)}</p>",
+            unsafe_allow_html=True
+        )
 
-    st.markdown("---")
+        st.markdown("---")
+    
+def explain_recommendation(row):
+    reasons = []
+
+    if row.get("rating_count", 0) > 5000:
+        reasons.append("highly rated by a large community")
+
+    if row.get("Score", 0) >= 8:
+        reasons.append("strong critical rating")
+
+    if row.get("Members", 0) >= anime_df["Members"].quantile(0.75):
+        reasons.append("very popular among viewers")
+
+    if not reasons:
+        reasons.append("strong thematic similarity")
+
+    return "Recommended because it is " + ", ".join(reasons) + "."
 
 
 # --------------------------------------------------
