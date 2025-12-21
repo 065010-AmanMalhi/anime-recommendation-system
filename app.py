@@ -12,19 +12,37 @@ from sklearn.metrics.pairwise import cosine_similarity
 # --------------------------------------------------
 st.markdown("""
 <style>
-/* Apply hover ONLY to cards, not images */
-div[data-testid="stVerticalBlock"]:hover:not(:has(img)) {
-    transform: scale(1.01);
-    transition: 0.2s ease-in-out;
+/* Dynamic gradient background */
+.stApp {
+    background: linear-gradient(
+        120deg,
+        #0e1117,
+        #141824,
+        #0e1117
+    );
+    background-size: 300% 300%;
+    animation: gradientShift 12s ease infinite;
 }
 
-/* Prevent image containers from transforming */
-img {
-    transform: none !important;
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Make cards stand out slightly */
+div[data-testid="stVerticalBlock"] {
+    background-color: rgba(28, 31, 38, 0.75);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+/* Sidebar polish */
+section[data-testid="stSidebar"] {
+    background-color: rgba(20, 24, 36, 0.95);
 }
 </style>
 """, unsafe_allow_html=True)
-
 
 st.set_page_config(
     page_title="Anime Recommendation System",
