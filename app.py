@@ -440,6 +440,13 @@ if mode == "Recommend Anime":
         )
 
 
+st.markdown(
+    "<hr style='margin-top:2rem; margin-bottom:1rem;'>"
+    "<center style='color:#9aa4b2; font-size:0.8rem;'>"
+    "Anime Recommendation System · Group ID 81036 · Built using Python & Streamlit"
+    "</center>",
+    unsafe_allow_html=True
+)
 
 
 
