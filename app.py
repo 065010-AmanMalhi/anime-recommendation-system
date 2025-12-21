@@ -12,34 +12,35 @@ from sklearn.metrics.pairwise import cosine_similarity
 # --------------------------------------------------
 st.markdown("""
 <style>
-/* Dynamic gradient background */
+/* App-level animated background */
 .stApp {
     background: linear-gradient(
-        120deg,
-        #0e1117,
-        #141824,
-        #0e1117
+        135deg,
+        #0b0f1a,
+        #111827,
+        #0b0f1a
     );
-    background-size: 300% 300%;
-    animation: gradientShift 12s ease infinite;
+    background-size: 400% 400%;
+    animation: bgShift 15s ease infinite;
 }
 
-@keyframes gradientShift {
+@keyframes bgShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-/* Make cards stand out slightly */
+/* Card container styling */
 div[data-testid="stVerticalBlock"] {
-    background-color: rgba(28, 31, 38, 0.75);
-    border-radius: 12px;
+    background-color: rgba(17, 24, 39, 0.85);
+    border-radius: 14px;
     padding: 1rem;
+    margin-bottom: 1rem;
 }
 
-/* Sidebar polish */
+/* Sidebar */
 section[data-testid="stSidebar"] {
-    background-color: rgba(20, 24, 36, 0.95);
+    background-color: rgba(15, 23, 42, 0.98);
 }
 </style>
 """, unsafe_allow_html=True)
