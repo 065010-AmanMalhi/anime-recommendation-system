@@ -50,6 +50,11 @@ st.set_page_config(
 )
 
 st.title("🎌 Anime Recommendation System")
+st.info(
+    "🔍 Recommendations are generated using content similarity "
+    "(TF-IDF + cosine similarity) combined with popularity and "
+    "community rating confidence."
+)
 st.caption("Story-driven recommendations · Built with analytics, not stereotypes")
 
 GROUP_ID = 81036
