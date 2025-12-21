@@ -369,6 +369,8 @@ def anime_card(row):
             f"{explain_recommendation(row)}</p>",
             unsafe_allow_html=True
         )
+        show_trailer(row["Name"])
+
 
     st.markdown("---")
 
@@ -389,6 +391,20 @@ def explain_recommendation(row):
         reasons.append("strong thematic similarity")
 
     return "Recommended because it is " + ", ".join(reasons) + "."
+
+def show_trailer(anime_name):
+    query = anime_name + " official trailer"
+    youtube_search_url = (
+        "https://www.youtube.com/results?search_query="
+        + query.replace(" ", "+")
+    )
+
+   st.markdown(
+    f"<span style='font-size:0.9rem;'>🎬 "
+    f"<a href='{youtube_search_url}' target='_blank'>Watch trailer</a>"
+    f"</span>",
+    unsafe_allow_html=True
+)
 
 
 # --------------------------------------------------
