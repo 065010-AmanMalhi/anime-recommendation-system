@@ -59,6 +59,8 @@ st.caption("Story-driven recommendations · Built with analytics, not stereotype
 GROUP_ID = 81036
 SAMPLE_SIZE = 10001
 
+FALLBACK_POSTER = "https://i.imgur.com/8zQZQZK.png"
+
 # --------------------------------------------------
 # Load + prepare data
 # --------------------------------------------------
@@ -257,14 +259,29 @@ def popularity_rating_scatter(df, title):
 # Poster fetching (MAL via Jikan)
 # --------------------------------------------------
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def fetch_anime_image(mal_id):
     try:
         url = f"https://api.jikan.moe/v4/anime/{mal_id}"
-        response = requests.get(url, timeout=5).json()
-        return response['data']['images']['jpg']['large_image_url']
-    except:
+        response = requests.get(url, timeout=5)
+
+        if response.status_code != 200:
+            return None
+
+        data = response.json()
+
+        image_url = (
+            data.get("data", {})
+                .get("images", {})
+                .get("jpg", {})
+                .get("large_image_url")
+        )
+
+        return image_url
+
+    except Exception:
         return None
+
 
 def get_ui_anime_list(df, top_n=200):
     ui_df = df.copy()
@@ -303,10 +320,14 @@ def anime_card(row):
     col1, col2 = st.columns([1, 3])
 
     with col1:
-        poster = fetch_anime_image(row['MAL_ID'])
-        if poster:
-            st.image(poster, use_column_width=True)
+    poster = fetch_anime_image(row['MAL_ID'])
 
+    if poster:
+        st.image(poster, use_column_width=True)
+    else:
+        st.image(FALLBACK_POSTER, use_column_width=True)
+        st.caption("🎴 Poster not available")
+        
     with col2:
         st.markdown(f"### {row['Name']}")
 
