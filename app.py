@@ -317,30 +317,24 @@ def get_all_genres(df):
 # UI components
 # --------------------------------------------------
 def anime_card(row):
+
     col1, col2 = st.columns([1, 3])
 
     with col1:
-    poster = fetch_anime_image(row['MAL_ID'])
+        poster = fetch_anime_image(row["MAL_ID"])
 
-    if poster:
-        st.image(poster, use_column_width=True)
-    else:
-        st.image(FALLBACK_POSTER, use_column_width=True)
-        st.caption("🎴 Poster not available")
+        if poster:
+            st.image(poster, use_column_width=True)
+        else:
+            st.image(FALLBACK_POSTER, use_column_width=True)
+            st.caption("🎴 Poster not available")
 
-        
     with col2:
         st.markdown(f"### {row['Name']}")
 
-        score = "N/A" if pd.isna(row['Score']) else round(row['Score'], 2)
+        score = "N/A" if pd.isna(row["Score"]) else round(row["Score"], 2)
+
         st.markdown(f"⭐ **Score:** {score}")
-
-        # Community rating signal
-        if row.get('rating_count', 0) > 0:
-            st.markdown(
-                f"👥 **Rated by:** {int(row['rating_count']):,} users"
-            )
-
         st.markdown(f"🎭 **Genres:** {row['Genres']}")
         st.markdown(f"🎬 **Studio:** {row['Studios']}")
         st.markdown(f"📺 **Episodes:** {row['Episodes']}")
@@ -350,13 +344,15 @@ def anime_card(row):
             f"<p style='color:#cfcfcf'>{row['sypnopsis'][:300]}...</p>",
             unsafe_allow_html=True
         )
+
         st.markdown(
             f"<p style='color:#9aa4b2; font-size:0.85rem; font-style:italic'>"
             f"{explain_recommendation(row)}</p>",
             unsafe_allow_html=True
         )
 
-        st.markdown("---")
+    st.markdown("---")
+
     
 def explain_recommendation(row):
     reasons = []
