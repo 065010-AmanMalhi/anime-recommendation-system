@@ -327,6 +327,7 @@ def anime_card(row):
     else:
         st.image(FALLBACK_POSTER, use_column_width=True)
         st.caption("🎴 Poster not available")
+
         
     with col2:
         st.markdown(f"### {row['Name']}")
